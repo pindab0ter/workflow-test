@@ -10,15 +10,21 @@ on:
 jobs:
   greetings:
     runs-on: ubuntu-latest
-    environment: ${{ vars.ENVIRONMENT_STAGE }}
+    environment: >-
+      ${{
+        (github.ref == 'refs/heads/main' && 'Production') ||
+        (github.ref == 'refs/heads/staging' && 'Staging') ||
+        'Development'
+      }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - run: |
+      - name: Build and run greetings
+        run: |
           docker build \
             --file Dockerfile \
             --tag greetings \
-            --build-arg NAME=${{ vars.NAME }} \
+            --build-arg NAME="${{ vars.NAME }}" \
             .
           docker run greetings
