@@ -1,4 +1,4 @@
-name: Test
+name: Greetings
 
 on:
   push:
@@ -8,8 +8,9 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  greeting:
+  greetings:
     runs-on: ubuntu-latest
+    environment: ${{ vars.ENVIRONMENT_STAGE }}
 
     steps:
       - uses: actions/checkout@v4
@@ -18,6 +19,6 @@ jobs:
           docker build \
             --file Dockerfile \
             --tag greetings \
-            --build-arg NAME=${{vars.NAME}} \
+            --build-arg NAME=${{ vars.NAME }} \
             .
           docker run greetings
