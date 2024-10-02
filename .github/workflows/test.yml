@@ -7,9 +7,16 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  build:
+  greeting:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo "${GITHUB_REF_NAME}"
-      - run: echo "${{ github.ref_name }}"
+      - uses: actions/checkout@v4
+
+      - run: |
+          docker build \
+            --file Dockerfile \
+            --tag greetings \
+            --build-arg NAME=${{vars.NAME}} \
+            .
+          docker run greetings
