@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: >-
       ${{
-        (github.ref == 'refs/heads/main' && 'Production') ||
-        (github.ref == 'refs/heads/staging' && 'Staging') ||
+        (github.ref_name == 'main' && 'Production') ||
+        (github.ref_name == 'staging' && 'Staging') ||
         'Development'
       }}
 
