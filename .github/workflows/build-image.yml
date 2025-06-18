@@ -1,0 +1,31 @@
+name: Build Image
+
+on:
+  workflow_call:
+    inputs:
+      assets_artifact_name:
+        description: "Name of the artifact with compiled frontend assets"
+        required: false
+        type: string
+
+jobs:
+  build-frontend:
+    uses: ./.github/workflows/build-frontend.yml
+    with:
+      origin_name: build-image
+    if: ${{ !inputs.assets_artifact_name }}
+
+  build-image:
+    runs-on: ubuntu-latest
+    needs: build-frontend
+    if: always()
+    steps:
+      - name: Print asset names
+        run: |
+          echo "Input assets_artifact_name: ${{ inputs.assets_artifact_name }}"
+          echo "Resolved assets_artifact_name: ${{ needs.build-frontend.outputs.assets_artifact_name }}"
+
+      - name: Build and push image
+        run: |
+          # Build and push image steps here
+          echo "Building and pushing Docker image..."

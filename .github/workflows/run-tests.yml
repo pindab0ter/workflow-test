@@ -1,0 +1,32 @@
+name: Run Tests
+
+on:
+  workflow_call:
+    inputs:
+      assets_artifact_name:
+        description: "Name of the artifact with compiled frontend assets"
+        required: false
+        type: string
+  workflow_dispatch:
+
+jobs:
+  build-frontend:
+    uses: ./.github/workflows/build-frontend.yml
+    with:
+      origin_name: test
+    if: ${{ !inputs.assets_artifact_name }}
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [build-frontend]
+    if: always()
+    steps:
+      - name: Print asset names
+        run: |
+          echo "Input assets_artifact_name: ${{ inputs.assets_artifact_name }}"
+          echo "Resolved assets_artifact_name: ${{ needs.build-frontend.outputs.assets_artifact_name }}"
+
+      - name: Run tests
+        run: |
+          # Test steps here
+          echo "Running tests..."

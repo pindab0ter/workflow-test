@@ -1,0 +1,27 @@
+name: Build Frontend Assets
+
+on:
+  workflow_call:
+    inputs:
+      origin_name:
+        description: "Name of the workflow calling this workflow"
+        required: true
+        type: string
+    outputs:
+      assets_artifact_name:
+        description: "Name of the artifact with compiled frontend assets"
+        value: ${{ jobs.build-frontend.outputs.assets_artifact_name }}
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    outputs:
+      assets_artifact_name: ${{ steps.assets-artifact-name.outputs.assets_artifact_name }}
+    steps:
+      - name: Build frontend assets
+        run: |
+          echo "Building frontend assets, origin: ${{ inputs.origin_name }}"
+
+      - name: Generate artifact name
+        id: assets-artifact-name
+        run: echo "assets_artifact_name=frontend-assets-${{ github.sha }}-${{ github.run_id }}" >> $GITHUB_OUTPUT
